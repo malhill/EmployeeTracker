@@ -61,21 +61,38 @@ let userChoices = () => {
             // Switch example from Express A:5
             switch (answers) {
                 case 'Add departments':
+                    inquirer
+                        .prompt([
+                            {
+                                name: 'department',
+                                message: 'Enter department name',
+                                type: 'input',
+                                validate: function (answer) {
+                                    if (answer === '') {
+                                        return "User needs to input a name!";
+                                    }
+                                    return true;
+                                },
+                            },
+                        ]).then(answers => {
+                            department(answers.department);
+                            runsearch();
+                        });
+                    break;
                 case 'Add roles':
                 case 'Add employees':
 
-
-                case 'View department(s)':
-                    addDepartment();
-                    runsearch();
+                case 'View departments':
+                    department();
+                    userChoices();
                     break;
-                case 'View role(s)':
-                    addRoles();
-                    runsearch();
+                case 'View roles':
+                    role();
+                    userChoices();
                     break;
-                case 'View employee(s)':
-                    addEmployee();
-                    runsearch();
+                case 'View employees':
+                    employee();
+                    userChoices();
                     break;
 
                 case 'Update employee roles':
@@ -85,12 +102,24 @@ let userChoices = () => {
                                 name: 'employeeId',
                                 message: 'Enter the employees ID:',
                                 type: 'input',
+                                validate: function (answer) {
+                                    if (answer === '') {
+                                        return "User needs to input an ID!";
+                                    }
+                                    return true;
+                                },
                             },
                             {
                                 name: 'roleId',
                                 message: 'Enter the role ID:',
                                 type: 'input',
-                            }
+                                validate: function (answer) {
+                                    if (answer === '') {
+                                        return "User needs to input an ID!";
+                                    }
+                                    return true;
+                                },
+                            },
                         ]).then(answers => {
                             updateRole(answers.employeeId, answers.roleId);
                             runsearch();
