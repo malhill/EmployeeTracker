@@ -1,5 +1,5 @@
 // require all of the packages!!!
-// Will attempt to split this into config folder later (as shown in A:12 in RUCB-REPO)
+// Will attempt to split this into config folder later (as shown in MVC A:12 in RUCB-REPO)
 const inquirer = require("inquirer");
 const fs = require("fs");
 const cTable = require('console.table');
@@ -37,7 +37,7 @@ let userChoices = () => {
     inquirer
         .prompt({
             name: 'userQuestions',
-            message: 'Would you like to view, add, and/or to make updates?',
+            message: 'Would you like to view, add, and/or make updates?',
             type: 'list',
             choices: [
                 // Will organize adding then viewing    
@@ -65,7 +65,7 @@ let userChoices = () => {
                         .prompt([
                             {
                                 name: 'department',
-                                message: 'Enter department name',
+                                message: 'Enter department name:',
                                 type: 'input',
                                 validate: function (answer) {
                                     if (answer === '') {
@@ -76,18 +76,114 @@ let userChoices = () => {
                             },
                         ]).then(answers => {
                             department(answers.department);
+                            //revisiting the functionception that I learned from the weather app
                             runsearch();
                         });
                     break;
+                //Copy and past the previous case, adding different variables
                 case 'Add roles':
+                    case 'Add departments':
+                    inquirer
+                        .prompt([
+                            {
+                                name: 'roles',
+                                message: 'Enter the name of the title:',
+                                type: 'input',
+                                validate: function (answer) {
+                                    if (answer === '') {
+                                        return "User needs to input a title name!";
+                                    }
+                                    return true;
+                                },
+                            },
+                            {
+                                name: 'salary',
+                                message: 'Enter the salary:',
+                                type: 'input',
+                                validate: function (answer) {
+                                    if (answer === '') {
+                                        return "User needs to input a value!";
+                                    }
+                                    return true;
+                                },
+                            },
+                            {
+                                name: 'department',
+                                message: 'Enter the ID of the department:',
+                                type: 'input',
+                                validate: function (answer) {
+                                    if (answer === '') {
+                                        return "User needs to input an ID!";
+                                    }
+                                    return true;
+                                },
+                            },
+                        ]).then(answers => {
+                            roles(answers.roles, answers.salary, answers.department);
+                            runsearch();
+                        });
+                    break;
+                //Copy and past the previous case, adding different variables
                 case 'Add employees':
-
+                    inquirer
+                        .prompt([
+                            {
+                                name: 'firstName',
+                                message: 'Enter the employees first name:',
+                                type: 'input',
+                                validate: function (answer) {
+                                    if (answer === '') {
+                                        return "User needs to input a first name!";
+                                    }
+                                    return true;
+                                },
+                            },
+                            {
+                                name: 'lastName',
+                                message: 'Enter the employees last name:',
+                                type: 'input',
+                                validate: function (answer) {
+                                    if (answer === '') {
+                                        return "User needs to input a last name!";
+                                    }
+                                    return true;
+                                },
+                            },
+                            {
+                                name: 'employeeRole',
+                                message: 'Enter the employees role:',
+                                type: 'input',
+                                validate: function (answer) {
+                                    if (answer === '') {
+                                        return "User needs to input a role!";
+                                    }
+                                    return true;
+                                },
+                            },
+                            {
+                                name: 'managerAssignment',
+                                message: 'Enter the managers ID:',
+                                type: 'input',
+                                validate: function (answer) {
+                                    if (answer === '') {
+                                        return "User needs to input a managers ID!";
+                                    }
+                                    return true;
+                                },
+                            },
+                        ]).then(answers => {
+                            employee(answers.firstName, answers.lastName, answers.employeeRole, answers.managerAssignment);
+                            runsearch();
+                        });
+                    break;
+                
+                // Simpler, created functions below!
                 case 'View departments':
                     department();
                     userChoices();
                     break;
                 case 'View roles':
-                    role();
+                    roles();
                     userChoices();
                     break;
                 case 'View employees':
@@ -95,6 +191,7 @@ let userChoices = () => {
                     userChoices();
                     break;
 
+                //Creating an update case
                 case 'Update employee roles':
                     inquirer
                         .prompt([
