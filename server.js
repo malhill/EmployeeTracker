@@ -33,6 +33,7 @@ connection.query = util.promisify(connection.query);
 // * View departments, roles, employees
 // * Update employee roles
 let userChoices = () => {
+    // inquierer refresher from MySQL A:10
     inquirer
         .prompt({
             name: 'userQuestions',
@@ -57,7 +58,7 @@ let userChoices = () => {
                 return true;
             },
         }).then(answers => {
-            // Switch example from Express A:1.5
+            // Switch example from Express A:5
             switch (answers) {
                 case 'Add departments':
                 case 'Add roles':
@@ -80,11 +81,22 @@ let userChoices = () => {
                 case 'Update employee roles':
                     inquirer
                         .prompt([
-                            
-                        ])
-                    break;
-                    
-            }
-        })
+                            {
+                                name: 'employeeId',
+                                message: 'Enter the employees ID:',
+                                type: 'input',
+                            },
+                            {
+                                name: 'roleId',
+                                message: 'Enter the role ID:',
+                                type: 'input',
+                            }
+                        ]).then(answers => {
+                            updateRole(answers.employeeId, answers.roleId);
+                            runsearch();
+                        })
+                    break;                    
+            };
+        });
 };
 
