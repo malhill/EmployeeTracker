@@ -1,4 +1,5 @@
 // require all of the packages!!!
+// Will attempt to split this into config folder later (as shown in A:12 in RUCB-REPO)
 const inquirer = require("inquirer");
 const fs = require("fs");
 const cTable = require('console.table');
@@ -22,30 +23,32 @@ connection.connect((err) => {
         return res.send("Error connecting to database.");
     } console.log("You're in!");
 
-    userSearch();
+    userChoices();
 })
 
 connection.query = util.promisify(connection.query);
 
 // * The command-line application should allow users to:
-//   * Add departments, roles, employees
-//   * View departments, roles, employees
-//   * Update employee roles
-let userSearch = () => {
+// * Add departments, roles, employees
+// * View departments, roles, employees
+// * Update employee roles
+let userChoices = () => {
     inquirer
         .prompt({
             name: 'userQuestions',
             message: 'Would you like to view, add, and/or to make updates?',
             type: 'list',
             choices: [
+                // Will organize adding then viewing    
                 'Add departments',
                 'Add roles',
-                'Add employees',  
+                'Add employees',
                 'View departments',
                 'View roles',
                 'View employees',
-                'Update employee roles',
-                'none'
+                'Update employee roles',    
+                // I want to create an exit application function for none/done
+                'none/done'
             ],
             validate: function (answer) {
                 if (answer === 'none') {
@@ -53,8 +56,35 @@ let userSearch = () => {
                 }
                 return true;
             },
-            
+        }).then(answers => {
+            // Switch example from Express A:1.5
+            switch (answers) {
+                case 'Add departments':
+                case 'Add roles':
+                case 'Add employees':
+
+
+                case 'View department(s)':
+                    addDepartment();
+                    runsearch();
+                    break;
+                case 'View role(s)':
+                    addRoles();
+                    runsearch();
+                    break;
+                case 'View employee(s)':
+                    addEmployee();
+                    runsearch();
+                    break;
+
+                case 'Update employee roles':
+                    inquirer
+                        .prompt([
+                            
+                        ])
+                    break;
+                    
+            }
         })
 };
 
-// }).then(answers => {
