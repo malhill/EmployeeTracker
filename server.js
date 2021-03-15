@@ -4,7 +4,7 @@ const inquirer = require("inquirer");
 const fs = require("fs");
 const cTable = require('console.table');
 const mysql = require("mysql");
-
+//MVC A:14
 const util = require("util");
 const choices = require("inquirer/lib/objects/choices");
 
