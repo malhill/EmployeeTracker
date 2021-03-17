@@ -52,14 +52,15 @@ let userChoices = () => {
                 'none/done'
             ],
             validate: function (answer) {
-                if (answer === 'none') {
-                    return "User needs to make a selection!";
+                if (answer === 'none/done') {
+                    return 'User needs to make a selection!';
                 }
                 return true;
             },
         }).then(answers => {
             // Switch example from Express A:5
-            switch (answers) {
+            console.log(answers);
+            switch (answers.userQuestions) {
                 case 'Add departments':
                     inquirer
                         .prompt([
@@ -75,14 +76,13 @@ let userChoices = () => {
                                 },
                             },
                         ]).then(answers => {
-                            department(answers.department);
+                            addDep(answers.department);
                             //revisiting the functionception that I learned from the weather app
-                            runsearch();
+                            userChoices();
                         });
                     break;
                 //Copy and past the previous case, adding different variables
                 case 'Add roles':
-                    case 'Add departments':
                     inquirer
                         .prompt([
                             {
@@ -119,8 +119,8 @@ let userChoices = () => {
                                 },
                             },
                         ]).then(answers => {
-                            roles(answers.roles, answers.salary, answers.department);
-                            runsearch();
+                            addRole(answers.roles, answers.salary, answers.department);
+                            userChoices();
                         });
                     break;
                 //Copy and past the previous case, adding different variables
@@ -151,7 +151,7 @@ let userChoices = () => {
                             },
                             {
                                 name: 'employeeRole',
-                                message: 'Enter the employees role:',
+                                message: 'Enter the employees role ID:',
                                 type: 'input',
                                 validate: function (answer) {
                                     if (answer === '') {
@@ -172,22 +172,22 @@ let userChoices = () => {
                                 },
                             },
                         ]).then(answers => {
-                            employee(answers.firstName, answers.lastName, answers.employeeRole, answers.managerAssignment);
-                            runsearch();
+                            addEmp(answers.firstName, answers.lastName, answers.employeeRole, answers.managerAssignment);
+                            userChoices();
                         });
                     break;
                 
                 // Simpler, created functions below!
                 case 'View departments':
-                    department();
+                    viewDep();
                     userChoices();
                     break;
                 case 'View roles':
-                    roles();
+                    viewRoles();
                     userChoices();
                     break;
                 case 'View employees':
-                    employee();
+                    viewEmployees();
                     userChoices();
                     break;
 
@@ -219,10 +219,82 @@ let userChoices = () => {
                             },
                         ]).then(answers => {
                             updateRole(answers.employeeId, answers.roleId);
-                            runsearch();
+                            userChoices();
                         })
                     break;                    
             };
         });
 };
+
+// reference line 79
+let addDep = (name) => {
+    connection.query('INSERT INTO department SET dep_name = ?',
+    [name],
+    function (error, results)  {
+        if (error) throw error;
+        // console.log(results);
+    });
+};
+
+// reference line 122
+let addRole = (title, salary, department_id) => {
+    connection.query('INSERT INTO role SET title = ?, salary = ?, dep_id = ?',
+    [title, salary, department_id],
+    function (error, results)  {
+        if (error) throw error;
+        // console.log(results);
+    });
+};
+
+// reference line 175
+let addEmp = (first, last, role, manager) => {
+    connection.query('INSERT INTO employee SET first_name = ?, last_name = ?, role_id = ?, manager_id = ?',
+    [first, last, role, manager],
+    function (error, results)  {
+        if (error) throw error;
+        // console.log(results);
+    });
+};
+
+// reference line 182
+let viewDep = () => {
+    connection.query('SELECT * FROM department;',
+    function (error, results)  {
+        if (error) throw error;
+        console.log('\n');
+        console.table(results);
+    });
+};
+
+// reference line 186
+let viewRoles = () => {
+    connection.query('SELECT title, salary, dep_id FROM role;',
+    function (error, results)  {
+        if (error) throw error;
+        console.log('\n');
+        console.table(results);
+    });
+};
+
+// reference line 190
+let viewEmployees = () => {
+    // connection.query('SELECT id, first_name, employee.last_name, role.id, department.dep_name AS department, role.salary;',
+    connection.query('SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary FROM employee LEFT JOIN role ON role.id = employee.role_id;',
+    function (error, results)  {
+        if (error) throw error;
+        console.log('\n');
+        console.table(results);
+    });
+};
+
+let updateEmp = () => {
+    connection.query('UPDATE employee SET manager_id = ? WHERE id = ?',
+    function (error, results)  {
+        if (error) throw error
+    });
+};
+
+
+
+
 
