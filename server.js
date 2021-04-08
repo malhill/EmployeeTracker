@@ -53,13 +53,15 @@ let userChoices = () => {
             ],
             validate: function (answer) {
                 if (answer === 'none/done') {
-                    return 'User needs to make a selection!';
+                    connection.end();
+                    console.log('Good Day!');
+                    // return 'User needs to make a selection!';
                 }
                 return true;
             },
         }).then(answers => {
             // Switch example from Express A:5
-            console.log(answers);
+            // console.log(answers);
             switch (answers.userQuestions) {
                 case 'Add departments':
                     inquirer
@@ -221,7 +223,11 @@ let userChoices = () => {
                             updateRole(answers.employeeId, answers.roleId);
                             userChoices();
                         })
-                    break;                    
+                    break;   
+                case 'none/done': 
+                    connection.end();
+                    console.log('Good Day!');
+                break; 
             };
         });
 };
